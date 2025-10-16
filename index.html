@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard 2025</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #007BFF;
+        }
+        #average-sales {
+            color: blue;
+            margin-top: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sales Dashboard 2025</h1>
+    <div id="sales-data"></div>
+    <div id="average-sales"></div>
+    <button id="toggle-button">Show Average Sales</button>
+    <footer><!-- build-id: 2023-10-01T12:00:00Z --></footer>
+
+    <script>
+        let showAverage = false;
+
+        const fetchData = async () => {
+            try {
+                const response = await fetch('./sales-data.json');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                renderSalesData(data);
+            } catch (error) {
+                document.getElementById('sales-data').innerText = 'Failed to load data.';
+            }
+        };
+
+        const renderSalesData = (data) => {
+            const totalSales = data.reduce((acc, region) => acc + parseFloat(region.sales), 0);
+            const averageSales = totalSales / data.length;
+
+            document.getElementById('sales-data').innerText = `Total Sales: ${formatCurrency(totalSales)}`;
+            document.getElementById('average-sales').innerText = `Average Sales per Region: ${formatCurrency(averageSales)}`;
+        };
+
+        const formatCurrency = (amount) => {
+            return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
+        };
+
+        document.getElementById('toggle-button').addEventListener('click', () => {
+            showAverage = !showAverage;
+            const salesDataDiv = document.getElementById('sales-data');
+            if (showAverage) {
+                salesDataDiv.innerText = `Average Sales per Region: ${document.getElementById('average-sales').innerText.split(': ')[1]}`;
+                document.getElementById('toggle-button').innerText = 'Show Total Sales';
+            } else {
+                salesDataDiv.innerText = `Total Sales: ${formatCurrency(data.reduce((acc, region) => acc + parseFloat(region.sales), 0))}`;
+                document.getElementById('toggle-button').innerText = 'Show Average Sales';
+            }
+        });
+
+        fetchData();
+    </script>
+</body>
+</html>
+<!-- build-id: 2025-10-16T11:34:51.687708 -->
